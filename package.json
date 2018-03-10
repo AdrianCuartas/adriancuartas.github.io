@@ -1,0 +1,24 @@
+{
+  "name": "restaurantreviews",
+  "version": "1.0.0",
+  "description": "Project about a restaurant review page for the Mobile Web Specialist nanodegree program",
+  "main": "index.js",
+  "scripts": {
+    "dev": "http-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AdrianCuartas/adriancuartas.github.io.git"
+  },
+  "keywords": [
+    "udacity",
+    "nanodegre",
+    "MWS"
+  ],
+  "author": "Adrian Cuartas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AdrianCuartas/adriancuartas.github.io/issues"
+  },
+  "homepage": "https://github.com/AdrianCuartas/adriancuartas.github.io#readme"
+}
