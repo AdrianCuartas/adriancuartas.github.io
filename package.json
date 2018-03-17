@@ -4,7 +4,8 @@
   "description": "Project about a restaurant review page for the Mobile Web Specialist nanodegree program",
   "main": "index.js",
   "scripts": {
-    "dev": "http-server"
+    "dev": "http-server",
+    "dev-p": "python -m SimpleHTTPServer 8000"
   },
   "repository": {
     "type": "git",
