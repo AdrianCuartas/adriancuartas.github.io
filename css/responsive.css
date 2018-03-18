@@ -1,0 +1,125 @@
+.content {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+@media screen and (max-width: 549px) {
+  
+  #footer {  
+    font-size: 10pt; 
+    letter-spacing: 0.5px;       
+  }
+
+  nav {
+    width: 100%;
+    min-height: 48px;
+    vertical-align: bottom
+  }  
+  nav h1 a {       
+    letter-spacing: 5px;    
+  }
+
+/* ====================== Restaurant Filtering ====================== */
+  .filter-options { 
+    min-height: 116px; 
+    padding: 10px;   
+  }
+
+  .filter-options select {
+    font-size: 12pt;
+    margin: 0;
+    margin-bottom: 15px;
+    min-height: 48px;   
+    min-width: 100%;
+  }
+  /* ====================== Restaurant Listing ====================== */
+  #restaurants-list {    
+    padding: 0;
+    min-width: 100%;
+  }
+  #restaurants-list li { 
+    margin-left: auto;
+    margin-right:auto;   
+    min-width: 270px;
+  } 
+  #restaurants-list li a {
+    min-height: 48px;
+    margin: 0;
+    padding: 0;
+  }
+  #restaurants-list li a {     
+    padding: 13px 30px 10px;
+    min-height: 22px;
+  }
+}
+
+@media screen and (min-width: 550px) { 
+  .filter-options {     
+    padding: 5px;   
+    min-height: 55px;
+  }
+  .filter-options select {
+    font-size: 12pt;
+    margin: 0;
+    margin-top: 5px;
+    min-height: 48px;      
+  }
+  #restaurants-list {    
+    padding: 0;
+    min-width: 100%;
+  }
+  #restaurants-list li { 
+    margin-left: auto;
+    margin-right:auto;   
+    min-width: 70%;
+  } 
+  #restaurants-list li a {     
+    padding: 13px 30px 10px;
+    min-height: 22px;
+  }
+}
+
+
+@media screen and (min-width: 700px) {
+  .filter-options {   
+    padding: 10px;   
+  }
+  .filter-options select {
+    font-size: 12pt;
+    margin: 0;
+    margin-bottom: 15px;
+    min-height: 48px;      
+  }
+  #restaurants-list {    
+    padding: 0;
+    min-width: 100%;
+  }
+  #restaurants-list li { 
+    margin-left: auto;
+    margin-right:auto;   
+    min-width: 270px;
+  } 
+}
+
+@media screen and (min-width: 850px) {
+  main {
+    width: 850px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .filter-options select {
+   
+    font-size: 11pt;
+    min-height: 40px;
+    letter-spacing: 0;
+    margin: 10px;
+    padding: 0 10px;
+    width: 200px;
+  }
+  #restaurants-list li { 
+    margin-left: auto;
+    margin-right:auto;   
+    min-width: 40%;
+  } 
+} 
