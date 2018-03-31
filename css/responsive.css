@@ -32,10 +32,6 @@
     min-width: 100%;
   }
 
-  .filter-options select:focus {
-    outline:  solid #000000;
-  }
-
   /* ====================== Restaurant Listing ====================== */
   #restaurants-list {    
     padding: 0;
