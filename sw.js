@@ -22,22 +22,17 @@ self.addEventListener('install', function(event) {
          'img/8.jpg',        
          'img/9.jpg',        
          'img/10.jpg',
-         'data/restaurants.json',
-         'https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi2_hdpi.png',
-         'https://maps.googleapis.com/maps/api/js/ViewportInfoService.GetViewportInfo?1m6&1m2&1d40.55965355640603&2d-74.42701631559135&2m2&1d40.88229899141979&2d-73.54234334861815&2u12&4sen-US&5e0&6sm%40417000000&7b0&8e0&callback=_xdc_._t44tqm&token=9596'
+         'data/restaurants.json'     
       ]);
     })
   );
 });
 
-self.addEventListener('activate', function(event) {
-  console.log('activate')
+self.addEventListener('activate', function(event) {  
   event.waitUntil(
-    caches.keys().then(function(cacheNames) {
-      console.log('cacheNames',cacheNames)
+    caches.keys().then(function(cacheNames) {      
       return Promise.all(
-        cacheNames.filter(function(cacheName) {
-          console.log('cacheName',cacheName)
+        cacheNames.filter(function(cacheName) {         
           return cacheName.startsWith('restaurant-static-') &&
                  cacheName != staticCacheName;
         }).map(function(cacheName) {
@@ -51,7 +46,26 @@ self.addEventListener('activate', function(event) {
 self.addEventListener('fetch', function(event) {
   event.respondWith(
     caches.match(event.request).then(function(response) {
-      return response || fetch(event.request);
+      return response || fetchAndCache(event.request);
     })
   );  
 });
+
+function fetchAndCache(url) {
+  return fetch(url)
+    .then(function(response){      
+      return caches.open(staticCacheName)
+        .then(function(cache) {
+          cache.put(url, response.clone());
+          
+          return response;
+        })
+        .catch(function(error){
+          console.error('Open caches failed:', error)
+        })
+    })
+    .catch(function(error) {
+      console.error('Request failed:', error);
+    });
+
+}
