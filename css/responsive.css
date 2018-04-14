@@ -66,11 +66,6 @@
     margin-right: auto;
     margin-left: auto;  
   }
-  #restaurant-img{
-    max-height: 300px;
-    margin-right: auto;
-    margin-left: auto;
-  }
   #restaurant-cuisine{
     margin-right: auto;
     margin-left: auto;
@@ -140,11 +135,6 @@
     margin-right: auto;
     margin-left: auto;   
   }
-  #restaurant-img{
-    max-height: 500px;
-    margin-right: auto;
-    margin-left: auto;
-  }
   #restaurant-cuisine{
     margin-right: auto;
     margin-left: auto;
@@ -198,13 +188,12 @@
 
 @media screen and (min-width: 850px) {
   main {
-    width: 850px;
+    width: 80%;
     margin-left: auto;
     margin-right: auto;
   }
 
-  .filter-options select {
-   
+  .filter-options select {   
     font-size: 11pt;
     min-height: 40px;
     letter-spacing: 0;
@@ -212,9 +201,4 @@
     padding: 0 10px;
     width: 200px;
   }
-  #restaurants-list li { 
-    margin-left: auto;
-    margin-right:auto;   
-    min-width: 40%;
-  } 
 } 
