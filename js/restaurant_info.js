@@ -4,7 +4,8 @@ var map;
 /**
  * Initialize Google map, called from HTML.
  */
-window.initMap = () => {
+function initMap() {
+  console.log('initMap')
   fetchRestaurantFromURL((error, restaurant) => {
     if (error) { // Got an error!
       console.error(error);
@@ -13,7 +14,7 @@ window.initMap = () => {
         zoom: 16,
         center: restaurant.latlng,
         scrollwheel: false
-      });
+      });      
       fillBreadcrumb();
       DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
     }
@@ -143,9 +144,9 @@ createReviewHTML = (review) => {
  * Add restaurant name to the breadcrumb navigation menu
  */
 fillBreadcrumb = (restaurant=self.restaurant) => {
+  console.log('fillBreadcrumb')
   const breadcrumb = document.getElementById('breadcrumb');
-  const li = document.createElement('li');
-  console.log('pasa')
+  const li = document.createElement('li');  
   li.innerHTML = restaurant.name;
   breadcrumb.appendChild(li);
 }
@@ -161,7 +162,7 @@ const getReviews = () => {
     .pop();
   
     DBHelper.fetchReviewsById(id, (error, reviews) => {
-    if (reviews) {
+    if (reviews) {      
       fillReviewsHTML(reviews);
     } else if (error) {
       console.log(error);
@@ -169,8 +170,15 @@ const getReviews = () => {
   });
 };
 
+const setupEventListeners = () => {
+  //document.addEventListener('submit', handleSubmit);
+  document.querySelector('#show-map').addEventListener('click', initMap);
+  //window.addEventListener('online', handleOnline);
+};
+
 document.addEventListener('DOMContentLoaded', event => {
   getReviews();
+  setupEventListeners();
 });
 
 

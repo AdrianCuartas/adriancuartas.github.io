@@ -23,14 +23,6 @@ function registerServiceWorker()  {
 registerServiceWorker()
 
 /**
- * Fetch neighborhoods and cuisines as soon as the page is loaded.
- */
-document.addEventListener('DOMContentLoaded', (event) => {
-  fetchNeighborhoods();
-  fetchCuisines();
-});
-
-/**
  * Fetch all neighborhoods and set their HTML.
  */
 fetchNeighborhoods = () => {
@@ -88,17 +80,18 @@ fillCuisinesHTML = (cuisines = self.cuisines) => {
 /**
  * Initialize Google map, called from HTML.
  */
-window.initMap = () => {
+function initMap() {
+  console.log('initMap')
   let loc = {
     lat: 40.722216,
     lng: -73.987501
-  };
+  };  
   self.map = new google.maps.Map(document.getElementById('map'), {
     zoom: 12,
     center: loc,
     scrollwheel: false
-  });
-  updateRestaurants();
+  });  
+  addMarkersToMap();
 }
 
 /**
@@ -124,6 +117,8 @@ updateRestaurants = () => {
   })
 }
 
+updateRestaurants();
+
 /**
  * Clear current restaurants, their HTML and remove their map markers.
  */
@@ -146,8 +141,7 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
   const ul = document.getElementById('restaurants-list');
   restaurants.forEach(restaurant => {
     ul.append(createRestaurantHTML(restaurant));
-  });
-  addMarkersToMap();
+  }); 
 }
 
 /**
@@ -196,3 +190,18 @@ addMarkersToMap = (restaurants = self.restaurants) => {
     self.markers.push(marker);
   });
 }
+
+const setupEventListeners = () => {
+  //document.addEventListener('submit', handleSubmit);
+  document.querySelector('#show-map').addEventListener('click', initMap);
+  //window.addEventListener('online', handleOnline);
+};
+
+/**
+ * Fetch neighborhoods and cuisines as soon as the page is loaded.
+ */
+document.addEventListener('DOMContentLoaded', (event) => {
+  fetchNeighborhoods();
+  fetchCuisines();
+  setupEventListeners();
+});
