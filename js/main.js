@@ -12,12 +12,9 @@ function registerServiceWorker()  {
 
   navigator.serviceWorker.register('../sw.js')
   .then(function(reg) {
-    console.log('registrado')
-
     if (!navigator.serviceWorker.controller) {
       return;
     }
-
   }).catch(function(error){
     console.error('error',error)
   })

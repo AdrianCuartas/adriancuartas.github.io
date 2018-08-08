@@ -68,8 +68,6 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
   }
-  // fill reviews
-  fillReviewsHTML();
 }
 
 /**
@@ -95,7 +93,7 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-fillReviewsHTML = (reviews = self.restaurant.reviews) => {
+fillReviewsHTML = reviews  => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';
@@ -147,9 +145,34 @@ createReviewHTML = (review) => {
 fillBreadcrumb = (restaurant=self.restaurant) => {
   const breadcrumb = document.getElementById('breadcrumb');
   const li = document.createElement('li');
+  console.log('pasa')
   li.innerHTML = restaurant.name;
   breadcrumb.appendChild(li);
 }
+
+/**
+ * Get reviews
+ */
+const getReviews = () => {
+  const id = window.location.href
+    .split('?')
+    .pop()
+    .split('=')
+    .pop();
+  
+    DBHelper.fetchReviewsById(id, (error, reviews) => {
+    if (reviews) {
+      fillReviewsHTML(reviews);
+    } else if (error) {
+      console.log(error);
+    }
+  });
+};
+
+document.addEventListener('DOMContentLoaded', event => {
+  getReviews();
+});
+
 
 /**
  * Get a parameter by name from page URL.

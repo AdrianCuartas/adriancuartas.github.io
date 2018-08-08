@@ -291,6 +291,17 @@ nav h1 a {
   color: #666;
 }
 
+#show-map {
+  border: none;
+  padding: 10px;
+  height: 49px;
+  width: 200px;
+  color: #585858;
+  border-radius: 3px;
+  font-size: 1rem;
+  background-color: #fff;
+}
+
 .commentsName{
   color:#333;
   font-weight: bold;
