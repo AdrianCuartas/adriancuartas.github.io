@@ -80,8 +80,7 @@ fillCuisinesHTML = (cuisines = self.cuisines) => {
 /**
  * Initialize Google map, called from HTML.
  */
-function initMap() {
-  console.log('initMap')
+function initMap() {  
   let loc = {
     lat: 40.722216,
     lng: -73.987501
@@ -193,7 +192,7 @@ addMarkersToMap = (restaurants = self.restaurants) => {
 
 const setupEventListeners = () => {
   //document.addEventListener('submit', handleSubmit);
-  document.querySelector('#show-map').addEventListener('click', initMap);
+  document.querySelector('#view-map').addEventListener('click', initMap);
   //window.addEventListener('online', handleOnline);
 };
 

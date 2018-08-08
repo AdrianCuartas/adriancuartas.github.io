@@ -2,30 +2,23 @@ let restaurant;
 var map;
 
 /**
- * Initialize Google map, called from HTML.
+ * Initialize Google map
  */
-function initMap() {
-  console.log('initMap')
-  fetchRestaurantFromURL((error, restaurant) => {
-    if (error) { // Got an error!
-      console.error(error);
-    } else {
+function initMap() { 
       self.map = new google.maps.Map(document.getElementById('map'), {
         zoom: 16,
-        center: restaurant.latlng,
+        center: self.restaurant.latlng,
         scrollwheel: false
-      });      
-      fillBreadcrumb();
+      });  
+
       DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
-    }
-  });
 }
 
 /**
  * Get current restaurant from page URL.
  */
-fetchRestaurantFromURL = (callback) => {
-  if (self.restaurant) { // restaurant already fetched!
+fetchRestaurantFromURL = (callback) => {  
+  if (self.restaurant) { // restaurant already fetched!    
     callback(null, self.restaurant)
     return;
   }
@@ -33,23 +26,23 @@ fetchRestaurantFromURL = (callback) => {
   if (!id) { // no id found in URL
     error = 'No restaurant id in URL'
     callback(error, null);
-  } else {
-    DBHelper.fetchRestaurantById(id, (error, restaurant) => {
-      self.restaurant = restaurant;
-      if (!restaurant) {
-        console.error(error);
-        return;
-      }
-      fillRestaurantHTML();
-      callback(null, restaurant)
-    });
+  } else {    
+       DBHelper.fetchRestaurantById(id, (error, restaurant) => {        
+        self.restaurant = restaurant;
+        if (!restaurant) {
+          console.error(error);
+          return;
+        }        
+        fillRestaurantHTML();
+        callback(null, restaurant)
+      });    
+    }
   }
-}
 
 /**
  * Create restaurant HTML and add it to the webpage
  */
-fillRestaurantHTML = (restaurant = self.restaurant) => {
+fillRestaurantHTML = (restaurant = self.restaurant) => {  
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
 
@@ -125,7 +118,7 @@ createReviewHTML = (review) => {
 
   const date = document.createElement('p');
   date.className ="commentsDate"
-  date.innerHTML = review.date;  
+  date.innerHTML = review.updatedAt;  
   li.appendChild(date);
 
   const rating = document.createElement('p');
@@ -143,8 +136,7 @@ createReviewHTML = (review) => {
 /**
  * Add restaurant name to the breadcrumb navigation menu
  */
-fillBreadcrumb = (restaurant=self.restaurant) => {
-  console.log('fillBreadcrumb')
+fillBreadcrumb = (restaurant=self.restaurant) => {  
   const breadcrumb = document.getElementById('breadcrumb');
   const li = document.createElement('li');  
   li.innerHTML = restaurant.name;
@@ -162,22 +154,18 @@ const getReviews = () => {
     .pop();
   
     DBHelper.fetchReviewsById(id, (error, reviews) => {
-    if (reviews) {      
-      fillReviewsHTML(reviews);
-    } else if (error) {
-      console.log(error);
-    }
+    if (reviews) fillReviewsHTML(reviews);    
   });
 };
 
 const setupEventListeners = () => {
   //document.addEventListener('submit', handleSubmit);
-  document.querySelector('#show-map').addEventListener('click', initMap);
+  document.querySelector('#view-map').addEventListener('click', initMap);
   //window.addEventListener('online', handleOnline);
 };
 
-document.addEventListener('DOMContentLoaded', event => {
-  getReviews();
+document.addEventListener('DOMContentLoaded', event => { 
+  getReviews();  
   setupEventListeners();
 });
 
@@ -197,3 +185,13 @@ getParameterByName = (name, url) => {
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
+
+
+fetchRestaurantFromURL((error, _restaurant) => {
+    if (error) { // Got an error!
+      console.error(error);
+    } else {        
+      restaurant = _restaurant;
+      fillBreadcrumb();  
+    }
+});
