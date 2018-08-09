@@ -1,5 +1,6 @@
 let restaurant;
 var map;
+let reviewsOffline = [];
 
 /**
  * Initialize Google map
@@ -13,6 +14,24 @@ function initMap() {
 
       DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
 }
+
+/**
+ * Display offline alert
+ */
+const offlineAlert = function(message){
+  const container = document.createElement('div');
+  container.className = 'offline-alert';
+  const text = document.createElement('p');
+  text.textContent = message;  
+  container.appendChild(text);
+  const body = document.getElementsByTagName('body')[0];
+
+  body.appendChild(container);
+  setTimeout(() => {
+    body.removeChild(container);
+  }, 5000);
+};
+
 
 /**
  * Get current restaurant from page URL.
@@ -87,8 +106,12 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-fillReviewsHTML = reviews  => {
+fillReviewsHTML = reviews  => {      
   const container = document.getElementById('reviews-container');
+  //clean existing reviews
+  while (container.firstChild) {
+    container.removeChild(container.firstChild);
+  }
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';
   container.appendChild(title);
@@ -144,29 +167,92 @@ fillBreadcrumb = (restaurant=self.restaurant) => {
 }
 
 /**
+ * Submit review
+ */
+const submitReview = function(e) {
+  e.preventDefault();  
+  const txtName = document.getElementById('name').value;  
+  const txtComments = document.getElementById('comments').value;
+  const txtRating = document.getElementById('rate').value;  
+  // bad input
+  if(txtName=='' || txtComments.value=='' || isNaN(txtRating) ||  txtRating>5 ||  txtRating<1) return  
+  const review = {
+    name : txtName,
+    rating: txtRating,
+    comments: txtComments,
+    restaurant_id: getParameterByName('id'),
+    updatedAt: Date.now(),
+    createdAt: Date.now()
+  };
+
+  if (navigator.onLine) DBHelper.insertReview(review, function(){ getReviews() });  
+  else {
+    // offline    
+    reviewsOffline.push(review);
+    getReviews(true);    
+    
+    // get reviews from localStorage
+    const reviewsStored = JSON.parse(localStorage.getItem('reviewsStored'));
+
+    let reviewsToStore;
+    if (reviewsStored && reviewsStored.length > 0) {
+      reviewsToStore = reviewsStored
+      reviewsToStore.push(review);      
+    } 
+    else {
+      reviewsToStore = [review]
+    }
+    
+    localStorage.setItem('reviewsStored', JSON.stringify(reviewsToStore));
+    
+    offlineAlert('Connectivity lost');
+  }
+
+  document.getElementById('name').value = ''
+  document.getElementById('comments').value= ''
+  document.getElementById('rate').value = ''
+};
+
+/**
+ * Upload pending reviews
+ */
+const uploadReviews = (callback = () => {}) => {
+  // fet stored reviews
+  const reviewsStored = JSON.parse(localStorage.getItem('reviewsStored'));
+
+  if (reviewsStored && reviewsStored.length > 0) {
+    reviewsStored.forEach(review => DBHelper.insertReview(review, () => callback()));
+  }
+  // clean stored reviews
+  localStorage.setItem('reviewsStored', JSON.stringify([]));
+};
+
+/**
  * Get reviews
  */
-const getReviews = () => {
-  const id = window.location.href
-    .split('?')
-    .pop()
-    .split('=')
-    .pop();
+const getReviews = (isOffline) => {
+  if (isOffline) return fillReviewsHTML(reviewsOffline);   
   
-    DBHelper.fetchReviewsById(id, (error, reviews) => {
-    if (reviews) fillReviewsHTML(reviews);    
+  DBHelper.fetchReviewsById(getParameterByName('id'), (error, reviews) => {
+    const filteredReviews = reviews.filter(review => !reviewsOffline.find(rev => rev.id === review.id));
+    reviewsOffline = reviewsOffline.filter(review => review.createdAt).concat(filteredReviews);    
+    fillReviewsHTML(reviewsOffline);
   });
 };
 
-const setupEventListeners = () => {
-  //document.addEventListener('submit', handleSubmit);
-  document.querySelector('#view-map').addEventListener('click', initMap);
-  //window.addEventListener('online', handleOnline);
+const wakeUp = function() { 
+  uploadReviews(getReviews()) 
 };
 
-document.addEventListener('DOMContentLoaded', event => { 
-  getReviews();  
-  setupEventListeners();
+const setEventListeners = () => {  
+  window.addEventListener('online', wakeUp);
+  document.addEventListener('submit', submitReview);
+  document.querySelector('#view-map').addEventListener('click', initMap); 
+};
+
+document.addEventListener('DOMContentLoaded', event => {   
+  uploadReviews(getReviews());
+  setEventListeners();  
 });
 
 

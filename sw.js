@@ -43,6 +43,7 @@ self.addEventListener('activate', function(event) {
 });
 
 self.addEventListener('fetch', function(event) {
+  if(event.request.method === "POST") return event
   event.respondWith(
     caches.match(event.request).then(function(response) {
       return response || fetchAndCache(event.request);

@@ -63,7 +63,6 @@ class DBHelper {
    * Fetch all reviews from a restaurant.
    */
   static fetchReviews(callback) {
-
     // IndexDB
     idb.open('restaurantsReviews',1, function(){
     }).then(db=>{      
@@ -260,6 +259,21 @@ class DBHelper {
       animation: google.maps.Animation.DROP}
     );
     return marker;
+  }
+
+  /**
+   * Insert a review
+   */
+  static insertReview(review, callback = () => {}) {    
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', `${DBHelper.DATABASE_URL}reviews`);
+    xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
+    xhr.onreadystatechange = function() {
+      if(this.readyState == XMLHttpRequest.DONE && this.status == 201) {        
+        callback()
+      }
+    }    
+    xhr.send(JSON.stringify(review));
   }
 
 }

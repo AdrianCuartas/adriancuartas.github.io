@@ -168,6 +168,8 @@ nav h1 a {
   margin: 0;
   font-size: 11pt;
 }
+
+#sendReview,
 #restaurants-list li a {
   background-color: orange;
   border-bottom: 3px solid #eee;
@@ -179,6 +181,11 @@ nav h1 a {
   text-align: center;
   text-decoration: none;
   text-transform: uppercase;
+}
+
+.button{ 
+  min-height: 48px;
+  max-width: 152px;
 }
 
 /* ====================== Restaurant Details ====================== */
@@ -318,4 +325,41 @@ nav h1 a {
   color:#b46100;
   font-weight: bold;
   font-size: 1em;
+}
+
+#reviews-form-container {
+  padding: 40px;  
+} 
+#reviews-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 10px;
+  max-width: 600px;
+  margin-left:auto;
+  margin-right:auto;
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 10px;
+}
+.form-group label {
+  margin-bottom: 3px;
+  color: #585858;
+  font-size: 0.9rem;
+  font-weight:bold;
+}
+.review-form-input,
+#comments {
+  border-radius: 3px;
+  padding: 8px;
+  height: 25px;
+  font-size: 0.8rem;
+  border: none;
+  background-color: #fff;
+}
+#comments {
+  min-height: 80px;
 }
