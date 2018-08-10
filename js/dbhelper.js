@@ -21,8 +21,7 @@ class DBHelper {
     idb.open('restaurantsReviews',1, function(upgradeDB){
       var store = upgradeDB.createObjectStore('restaurants',{keyPath:'id'})
       store.createIndex('by-name', 'name')
-      var store = upgradeDB.createObjectStore('reviews',{keyPath:'id'})
-      store.createIndex('by-name', 'name')
+      var store = upgradeDB.createObjectStore('reviews',{keyPath:'id'})      
     }).then(db=>{      
         const indexdb = db.transaction('restaurants').objectStore('restaurants')
         indexdb.getAll().then(restaurantsIdb=>{
@@ -62,11 +61,12 @@ class DBHelper {
   /**
    * Fetch all reviews from a restaurant.
    */
-  static fetchReviews(callback) {
+  static fetchReviews(callback) {    
     // IndexDB
     idb.open('restaurantsReviews',1, function(){
     }).then(db=>{      
-        const indexdb = db.transaction('reviews').objectStore('reviews')
+        const indexdb = db.transaction('reviews').objectStore('reviews')     
+
         indexdb.getAll().then(restaurantsIdb=>{
           if (restaurantsIdb.length > 0) callback(null, restaurantsIdb);
           else{
@@ -267,13 +267,28 @@ class DBHelper {
   static insertReview(review, callback = () => {}) {    
     let xhr = new XMLHttpRequest();
     xhr.open('POST', `${DBHelper.DATABASE_URL}reviews`);
-    xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
-    xhr.onreadystatechange = function() {
-      if(this.readyState == XMLHttpRequest.DONE && this.status == 201) {        
+    xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");    
+    xhr.onreadystatechange = function() {      
+      if(this.readyState == XMLHttpRequest.DONE && this.status == 201) {
+        DBHelper.clearReviewsFromIDB()                      
         callback()
       }
     }    
     xhr.send(JSON.stringify(review));
+  }
+
+    
+  /**
+   * Clear reviews from IDB
+   */
+  static clearReviewsFromIDB() {               
+    idb.open('restaurantsReviews',1, function(){
+    }).then(db=>{
+      const tx = db.transaction('reviews', 'readwrite');
+      tx.objectStore('reviews').clear()
+            
+      return tx.complete;
+    }) 
   }
 
 }

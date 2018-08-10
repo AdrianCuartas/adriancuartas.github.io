@@ -43,7 +43,7 @@ self.addEventListener('activate', function(event) {
 });
 
 self.addEventListener('fetch', function(event) {
-  if(event.request.method === "POST") return event
+  if(event.request.method === "POST") return event  
   event.respondWith(
     caches.match(event.request).then(function(response) {
       return response || fetchAndCache(event.request);
@@ -56,7 +56,9 @@ function fetchAndCache(url) {
     .then(function(response){      
       return caches.open(staticCacheName)
         .then(function(cache) {
-          cache.put(url, response.clone());
+          if (!url.url.endsWith('/reviews')) {
+            cache.put(url, response.clone());
+          }
           
           return response;
         })
