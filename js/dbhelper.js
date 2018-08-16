@@ -63,16 +63,14 @@ class DBHelper {
    */
   static fetchReviews(callback) {    
     // IndexDB
-    idb.open('restaurantsReviews',1, function(){
-      console.log('crea')
+    idb.open('restaurantsReviews',1, function(){      
       upgradeDB.createObjectStore('reviews',{keyPath:'id'})      
     }).then(db=>{      
         const indexdb = db.transaction('reviews').objectStore('reviews')     
 
         indexdb.getAll().then(reviewsIdb=>{
           if (reviewsIdb.length > 0)
-          { 
-            console.log('devuelve', reviewsIdb)
+          {             
             callback(null, reviewsIdb);
           }
           else{
@@ -80,8 +78,7 @@ class DBHelper {
             xhr.open('GET', `${DBHelper.DATABASE_URL}reviews`);
             xhr.onload = () => {
               if (xhr.status === 200) { // Got a success response from server!
-                const reviews = JSON.parse(xhr.responseText);      
-                console.log('carga')  
+                const reviews = JSON.parse(xhr.responseText);                      
                 callback(null, reviews);
                
                 // IndexDB
@@ -278,8 +275,7 @@ class DBHelper {
     xhr.onreadystatechange = function() {      
       if(this.readyState == XMLHttpRequest.DONE && this.status == 201) {
         DBHelper.clearReviewsFromIDB()
-        .then(()=>{
-          console.log('hace el callback después de limpiar')
+        .then(()=>{          
           callback()
         }) 
         .catch(()=>{
@@ -288,6 +284,16 @@ class DBHelper {
       }
     }    
     xhr.send(JSON.stringify(review));
+  }
+
+  /**
+   * Set favorite restaurant
+   */
+  static setFavoriteRestaurant(restaurant) {
+    const bIsFav = restaurant.is_favorite ==='true'
+    return fetch(`${DBHelper.DATABASE_URL}restaurants/${restaurant.id}/?is_favorite=${!bIsFav}`, {
+      method: 'PUT'
+    });
   }
     
   /**
@@ -298,8 +304,23 @@ class DBHelper {
       idb.open('restaurantsReviews',1, function(){
       }).then(db=>{
         const tx = db.transaction('reviews', 'readwrite');
-        tx.objectStore('reviews').clear()              
-        console.log('borra')
+        tx.objectStore('reviews').clear()                      
+        resolve(tx.complete)
+      }).catch(err=>{
+        reject(err)
+      })
+    })    
+  }
+
+  /**
+   * Clear restaurants from IDB
+   */
+  static clearRestaurantsFromIDB() {  
+    return new Promise((resolve, reject) => {
+      idb.open('restaurantsReviews',1, function(){
+      }).then(db=>{
+        const tx = db.transaction('restaurants', 'readwrite');
+        tx.objectStore('restaurants').clear()                      
         resolve(tx.complete)
       }).catch(err=>{
         reject(err)

@@ -31,6 +31,19 @@ const offlineAlert = function(message){
   }, 5000);
 };
 
+/**
+ * Date format
+ */
+const dateFormat = date => {
+  const _date = new Date(date);
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  
+  const day = _date.getDate();
+  const month = months[_date.getMonth()];  
+  const year = _date.getFullYear();
+
+  return `${month} ${day}, ${year}`;
+};
 
 /**
  * Get current restaurant from page URL.
@@ -138,7 +151,7 @@ createReviewHTML = (review) => {
 
   const date = document.createElement('p');
   date.className ="commentsDate"
-  date.innerHTML = review.updatedAt;  
+  date.innerHTML = dateFormat(review.updatedAt);  
   li.appendChild(date);
 
   const rating = document.createElement('p');
@@ -230,8 +243,7 @@ const uploadReviews = () => {
 /**
  * Get reviews
  */
-const getReviews = () => { 
-  console.log('pasa por getReviews')
+const getReviews = () => {   
   let reviewsOffline = JSON.parse(localStorage.getItem('reviewsStored'));
   if (reviewsOffline === null) reviewsOffline = []
   
