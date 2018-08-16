@@ -211,26 +211,27 @@ const submitReview = function(e) {
 /**
  * Upload pending reviews
  */
-const uploadReviews = (callback = () => {}) => {
-  if (navigator.onLine) {
-   
+const uploadReviews = () => {
+  if (navigator.onLine) {   
     // fet stored reviews
     const reviewsStored = JSON.parse(localStorage.getItem('reviewsStored'));
 
     if (reviewsStored && reviewsStored.length > 0) {      
-      reviewsStored.forEach(review => DBHelper.insertReview(review, () => callback()));
+      reviewsStored.forEach(review => DBHelper.insertReview(review, function(){ getReviews() }));
     }
     // clean stored reviews    
     localStorage.setItem('reviewsStored', JSON.stringify([]));
   }
-
-  return callback()
-};
+  else {
+   getReviews()
+  }
+}
 
 /**
  * Get reviews
  */
 const getReviews = () => { 
+  console.log('pasa por getReviews')
   let reviewsOffline = JSON.parse(localStorage.getItem('reviewsStored'));
   if (reviewsOffline === null) reviewsOffline = []
   
@@ -242,7 +243,7 @@ const getReviews = () => {
 };
 
 const setEventListeners = () => {  
-  window.addEventListener('online', uploadReviews(getReviews()));
+  window.addEventListener('online', uploadReviews());
   document.addEventListener('submit', submitReview);
   document.querySelector('#view-map').addEventListener('click', initMap); 
 };
@@ -277,3 +278,5 @@ fetchRestaurantFromURL((error, _restaurant) => {
       fillBreadcrumb();  
     }
 });
+
+getReviews()
